@@ -273,7 +273,7 @@ async function fetchPgcrWithRetries(pgcrId: number) {
       if (timeSinceLastConcurrencyChange > ONE_SECOND) {
         lastThrottle = Date.now();
         lastConcurrencyChange = new Date();
-        queue.concurrency = queue.concurrency - 5;
+        queue.concurrency = Math.max(1, queue.concurrency - 5);
         concurrencyMetric.set(queue.concurrency);
         console.log("Reducing concurrency to", queue.concurrency);
       }
