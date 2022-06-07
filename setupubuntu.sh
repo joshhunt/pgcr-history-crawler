@@ -29,3 +29,4 @@ yarn run ts-node --esm ./main.ts
 
 
 
+git reset origin/main --hard

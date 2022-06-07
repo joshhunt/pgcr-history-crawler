@@ -185,7 +185,7 @@ function makePgcrWorker(pgcrId: number) {
         pgcr.entries[0]?.values?.activityDurationSeconds.basic.value ?? -1;
 
       const key = `pgcr-${pgcrId.toString()}`;
-      keyv.set(key, { teams, duration });
+      keyv.set(key, { teams, duration, period: pgcrPeriod });
     } else {
       // console.log(
       //   `PGCR ${pgcr.activityDetails.instanceId} - ${formatRelative(
