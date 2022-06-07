@@ -191,6 +191,13 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
+"@types/sqlite3@^3.1.8":
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/@types/sqlite3/-/sqlite3-3.1.8.tgz#e64310c5841fc01c1a8795d960d951e4cf940296"
+  integrity sha512-sQMt/qnyUWnqiTcJXm5ZfNPIBeJ/DVvJDwxw+0tAxPJvadzfiP1QhryO1JOR6t1yfb8NpzQb/Rud06mob5laIA==
+  dependencies:
+    "@types/node" "*"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
