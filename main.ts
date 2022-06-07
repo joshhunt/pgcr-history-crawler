@@ -1,5 +1,8 @@
 import PQueue from "p-queue";
-import { DestinyPostGameCarnageReportData } from "bungie-api-ts/destiny2";
+import {
+  DestinyPostGameCarnageReportData,
+  DestinyPostGameCarnageReportEntry,
+} from "bungie-api-ts/destiny2";
 import { formatRelative } from "date-fns";
 import { setTimeout as wait } from "timers/promises";
 import Keyv from "keyv";
@@ -162,22 +165,57 @@ function makePgcrWorker(pgcrId: number) {
     );
 
     if (isIronBanner) {
-      const activityName = getActivity(
-        pgcr.activityDetails.directorActivityHash
-      );
       console.log(
         `PGCR ${pgcr.activityDetails.instanceId} - ${formatRelative(
           pgcrPeriod,
           new Date()
-        )} - ${activityName?.displayProperties.name}`
+        )}`
       );
 
-      const teams: Record<string, { standing: string; score: number }> = {};
+      const teams: Record<
+        string,
+        { standing: string; score: number; largestFireteamSize: number }
+      > = {};
 
       for (const team of pgcr.teams) {
+        const teamPlayers = pgcr.entries.filter(
+          (v) => v.values.team.basic.value === team.teamId
+        );
+
+        const fireteams: Record<string, DestinyPostGameCarnageReportEntry[]> =
+          {};
+
+        for (const player of teamPlayers) {
+          const fireteamId = player.values.fireteamId.basic.value.toString();
+
+          if (!fireteams[fireteamId]) {
+            fireteams[fireteamId] = [];
+          }
+
+          fireteams[fireteamId].push(player);
+        }
+
+        const fireteamEntries = Object.keys(fireteams);
+        teamPlayers.sort(
+          (a, b) =>
+            Number(a.values.fireteamId.basic.value.toString()) -
+            Number(b.values.fireteamId.basic.value.toString())
+        );
+
+        for (const player of teamPlayers) {
+          const fireteamIndex = fireteamEntries.indexOf(
+            player.values.fireteamId.basic.value.toString()
+          );
+        }
+
+        const largestFireteamSize = Math.max(
+          ...Object.values(fireteams).map((v) => v.length)
+        );
+
         teams[team.teamName] = {
           standing: team.standing.basic.displayValue,
           score: team.score.basic.value,
+          largestFireteamSize,
         };
       }
 
@@ -185,14 +223,8 @@ function makePgcrWorker(pgcrId: number) {
         pgcr.entries[0]?.values?.activityDurationSeconds.basic.value ?? -1;
 
       const key = `pgcr-${pgcrId.toString()}`;
-      keyv.set(key, { teams, duration, period: pgcrPeriod });
-    } else {
-      // console.log(
-      //   `PGCR ${pgcr.activityDetails.instanceId} - ${formatRelative(
-      //     pgcrPeriod,
-      //     new Date()
-      //   )}`
-      // );
+      const payload = { teams, duration, period: pgcrPeriod };
+      keyv.set(key, payload);
     }
 
     const timeSinceLastThrottle = Date.now() - lastThrottle;
