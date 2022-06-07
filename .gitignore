@@ -1,0 +1,4 @@
+node_modules
+.env
+grafanaAgent.yaml
+keyval.sqlite
