@@ -112,7 +112,7 @@ interface SavedPGCRData {
 let org = `josh@trtr.co`;
 let bucket = process.env.INFLUX_BUCKET || `test-rifts`;
 
-let writeClient = client.getWriteApi(org, bucket, "ms");
+let writeClient = client.getWriteApi(org, bucket, "s");
 
 setInterval(async () => {
   console.log("flushing to influxdb");
@@ -157,7 +157,7 @@ function makePgcrWorker(pgcrId: number) {
     }
 
     let point = new Point("pgcr")
-      .timestamp(pgcrDate.getTime())
+      .timestamp(pgcrDate)
       .tag("isTied", isTied ? "true" : "false")
       .tag("pgcrId", pgcrId.toString())
       .intField("winningTeamScore", winningTeam.score)
