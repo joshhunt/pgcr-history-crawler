@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "@d2api/manifest-node": "^1.0.3",
+    "@influxdata/influxdb-client": "^1.26.0",
     "@keyv/sqlite": "^3.5.2",
     "@types/axios": "^0.14.0",
     "@types/date-fns": "^2.6.0",
